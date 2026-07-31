@@ -1,0 +1,24 @@
+# ==========================
+# IntelliJ / VS Code
+# ==========================
+.idea/
+**/.idea/
+.vscode/
+
+# ==========================
+# Spring Boot
+# ==========================
+backend/target/
+*.class
+
+# ==========================
+# React
+# ==========================
+reactapp/securevault-frontend/node_modules/
+reactapp/securevault-frontend/dist/
+
+# ==========================
+# Environment
+# ==========================
+.env
+*.log
