@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./Login.css";
 
 function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,10 +15,8 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Clear previous message
     setMessage("");
 
-    // Validation
     if (!email.trim() || !password.trim()) {
       setMessage("Please fill in all fields.");
       setMessageType("error");
@@ -31,6 +31,15 @@ function Login() {
 
       setMessage(response.data.message);
       setMessageType("success");
+
+      // Optional: Store login status
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userEmail", email);
+
+      // Redirect after 1 second
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
 
     } catch (error) {
       setMessage(error.response?.data?.message || "Login Failed");
@@ -66,6 +75,10 @@ function Login() {
         )}
 
         <button type="submit">Login</button>
+
+        <p className="forgot-text">
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </p>
 
         <p className="register-text">
           Don't have an account? <Link to="/register">Register</Link>

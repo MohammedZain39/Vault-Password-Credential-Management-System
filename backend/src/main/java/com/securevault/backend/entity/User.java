@@ -40,4 +40,14 @@ public class User {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column
+    private String otp;
+
+    private LocalDateTime otpExpiry;
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean otpVerified = false;
+
+
 }
