@@ -1,98 +1,196 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import API from "../services/api";
 import "./Register.css";
 
 function Register() {
+
+  const navigate = useNavigate();
+
   const [fullName, setFullName] = useState("");
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-const [message, setMessage] = useState("");
-const [messageType, setMessageType] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   const handleRegister = async (e) => {
-  e.preventDefault();
 
-  // Clear previous message
-  setMessage("");
+    e.preventDefault();
 
-  // Full Name Validation
-  if (!fullName.trim()) {
-    setMessage("Full name is required.");
-    setMessageType("error");
-    return;
-  }
+    setMessage("");
 
-  // Password Length Validation
-  if (password.length < 8) {
-    setMessage("Password must be at least 8 characters long.");
-    setMessageType("error");
-    return;
-  }
+    if (!fullName.trim()) {
 
-  try {
-    await API.post("/auth/register", {
-      fullName,
-      email,
-      password,
-    });
+      setMessage("Full name is required.");
 
-    // Redirect immediately to Login page
-    navigate("/login");
+      setMessageType("error");
 
-  } catch (error) {
-    setMessage(error.response?.data?.message || "Registration Failed");
-    setMessageType("error");
-  }
-};
+      return;
+
+    }
+
+    if (password.length < 8) {
+
+      setMessage("Password must be at least 8 characters.");
+
+      setMessageType("error");
+
+      return;
+
+    }
+
+    try {
+
+      await API.post("/auth/register", {
+
+        fullName,
+        email,
+        password
+
+      });
+
+      navigate("/login");
+
+    } catch (error) {
+
+      setMessage(
+
+        error.response?.data?.message ||
+
+        "Registration Failed"
+
+      );
+
+      setMessageType("error");
+
+    }
+
+  };
 
   return (
+
     <div className="register-container">
-      <form className="register-box" onSubmit={handleRegister}>
-        <h2>Create Account</h2>
 
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          required
-        />
+      <form
+        className="register-box"
+        onSubmit={handleRegister}
+      >
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <div className="logo">
 
-        <input
-  type="password"
-  placeholder="Password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  required
-/>
+          <FaLock />
 
-{message && (
-  <div className={`message ${messageType}`}>
-    {message}
-  </div>
-)}
+        </div>
 
-        <button type="submit">Register</button>
+        <h1>SecureVault</h1>
+
+        <p className="subtitle">
+
+          Create Your Secure Account
+
+        </p>
+
+        <div className="input-box">
+
+          <FaUser className="input-icon"/>
+
+          <input
+
+            type="text"
+
+            placeholder="Full Name"
+
+            value={fullName}
+
+            onChange={(e)=>setFullName(e.target.value)}
+
+          />
+
+        </div>
+
+        <div className="input-box">
+
+          <input
+
+            type="email"
+
+            placeholder="Email Address"
+
+            value={email}
+
+            onChange={(e)=>setEmail(e.target.value)}
+
+          />
+
+        </div>
+
+        <div className="input-box">
+
+          <input
+
+            type={showPassword ? "text":"password"}
+
+            placeholder="Password"
+
+            value={password}
+
+            onChange={(e)=>setPassword(e.target.value)}
+
+          />
+
+          <span
+            className="eye"
+            onClick={()=>setShowPassword(!showPassword)}
+          >
+
+            {showPassword ?
+
+              <FaEyeSlash/> :
+
+              <FaEye/>}
+
+          </span>
+
+        </div>
+
+        {message && (
+
+          <div className={`message ${messageType}`}>
+
+            {message}
+
+          </div>
+
+        )}
+
+        <button>
+
+          Create Account
+
+        </button>
 
         <p className="login-text">
-             Already have an account? <Link to="/login">Login</Link>
+
+          Already have an account?
+
+          <Link to="/login">
+
+            Login
+
+          </Link>
+
         </p>
+
       </form>
+
     </div>
+
   );
+
 }
 
 export default Register;

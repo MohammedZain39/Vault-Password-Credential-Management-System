@@ -6,6 +6,7 @@ import com.securevault.backend.entity.User;
 import com.securevault.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.securevault.backend.security.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -16,13 +17,17 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final JwtService jwtService;
 
     public AuthServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           EmailService emailService) {
+                           EmailService emailService,
+                           JwtService jwtService) {
+
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.jwtService = jwtService;
     }
 
     // ================= OTP Generator =================
@@ -66,7 +71,12 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        return new AuthResponse("Login successful");
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new AuthResponse(
+                "Login successful",
+                token
+        );
     }
 
     // ================= Forgot Password =================

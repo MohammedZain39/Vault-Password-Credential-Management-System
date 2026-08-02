@@ -10,6 +10,10 @@ import VerifyOtp from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AddCredential from "./pages/AddCredential";
+import EditCredential from "./pages/EditCredential";
+import ViewCredential from "./pages/ViewCredential";
+
 
 function App() {
   return (
@@ -32,11 +36,52 @@ function App() {
     </ProtectedRoute>
   }
 />
-      <Route path="/vault" element={<Vault />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route
+  path="/vault"
+  element={
+    <ProtectedRoute>
+      <Vault />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/add-credential"
+  element={
+    <ProtectedRoute>
+      <AddCredential />
+    </ProtectedRoute>
+  }
+/>
+<Route
+    path="/credential/:id"
+    element={
+        <ProtectedRoute>
+            <ViewCredential />
+        </ProtectedRoute>
+    }
+/>
+<Route
+  path="/edit-credential/:id"
+  element={
+    <ProtectedRoute>
+      <EditCredential />
+    </ProtectedRoute>
+  }
+/>
 
       <Route path="*" element={<NotFound />} />
     </Routes>
+    
   );
 }
 

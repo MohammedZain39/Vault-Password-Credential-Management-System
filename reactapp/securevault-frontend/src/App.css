@@ -182,3 +182,13 @@
     border-right-color: var(--border);
   }
 }
+body{
+    margin:0;
+    font-family:Inter,sans-serif;
+    background:#0F172A;
+    color:#111827;
+}
+
+*{
+    box-sizing:border-box;
+}
