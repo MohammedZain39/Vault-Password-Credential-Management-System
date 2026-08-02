@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaLock, FaThLarge, FaVault, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaLock, FaThLarge, FaShieldAlt , FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import "./Navbar.css";
 
 function Navbar() {
@@ -39,7 +39,7 @@ function Navbar() {
 
         <NavLink to="/vault">
 
-          <FaVault />
+          <FaShieldAlt />
 
           Vault
 
