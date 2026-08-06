@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./AddCredential.css";
+import { generatePassword } from "../utils/passwordGenerator";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function AddCredential() {
 
@@ -18,12 +20,24 @@ function AddCredential() {
 
     const [message, setMessage] = useState("");
 
+    const handleGeneratePassword = () => {
+
+    setFormData({
+        ...formData,
+        password: generatePassword()
+    });
+
+};
+
+const [showPassword, setShowPassword] = useState(false);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
     };
+
 
     const handleSubmit = async (e) => {
 
@@ -86,14 +100,34 @@ function AddCredential() {
                     required
                 />
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
+                <div className="password-field">
+
+    <input
+        type={showPassword ? "text" : "password"}
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+    />
+
+    <button
+        type="button"
+        className="generate-btn"
+        onClick={handleGeneratePassword}
+    >
+        Generate
+    </button>
+
+    <button
+    type="button"
+    className="eye-btn"
+    onClick={() => setShowPassword(!showPassword)}
+>
+    {showPassword ? <FaEyeSlash /> : <FaEye />}
+</button>
+
+</div>
 
                 <input
                     type="text"

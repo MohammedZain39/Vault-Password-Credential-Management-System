@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import API from "../services/api";
 import "./Register.css";
+import { generatePassword } from "../utils/passwordGenerator";
 
 function Register() {
 
@@ -17,6 +18,10 @@ function Register() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
 
+  const handleGeneratePassword = () => {
+  const newPassword = generatePassword();
+  setPassword(newPassword);
+  };
   const handleRegister = async (e) => {
 
     e.preventDefault();
@@ -130,32 +135,29 @@ function Register() {
 
         <div className="input-box">
 
-          <input
+  <input
+    type={showPassword ? "text" : "password"}
+    placeholder="Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+  />
 
-            type={showPassword ? "text":"password"}
+  <button
+    type="button"
+    className="generate-btn"
+    onClick={handleGeneratePassword}
+  >
+    Generate
+  </button>
 
-            placeholder="Password"
+  <span
+    className="eye"
+    onClick={() => setShowPassword(!showPassword)}
+  >
+    {showPassword ? <FaEyeSlash /> : <FaEye />}
+  </span>
 
-            value={password}
-
-            onChange={(e)=>setPassword(e.target.value)}
-
-          />
-
-          <span
-            className="eye"
-            onClick={()=>setShowPassword(!showPassword)}
-          >
-
-            {showPassword ?
-
-              <FaEyeSlash/> :
-
-              <FaEye/>}
-
-          </span>
-
-        </div>
+</div>
 
         {message && (
 
