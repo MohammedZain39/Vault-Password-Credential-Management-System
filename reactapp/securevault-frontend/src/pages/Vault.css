@@ -351,3 +351,484 @@ width:100%;
 }
 
 }
+/* ===========================
+   SHARE BUTTON
+=========================== */
+
+.share-card-btn{
+
+    background:#7C3AED !important;
+
+}
+
+.share-card-btn:hover{
+
+    background:#6D28D9 !important;
+
+}
+
+
+/* ===========================
+   SHARE MODAL OVERLAY
+=========================== */
+
+.share-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(15,23,42,.72);
+
+    backdrop-filter:blur(6px);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+
+    padding:20px;
+
+}
+
+
+/* ===========================
+   SHARE MODAL
+=========================== */
+
+.share-modal{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:460px;
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:32px;
+
+    box-shadow:0 25px 70px rgba(0,0,0,.35);
+
+    animation:shareModalIn .2s ease-out;
+
+}
+
+@keyframes shareModalIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(15px) scale(.98);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0) scale(1);
+
+    }
+
+}
+
+
+/* ===========================
+   CLOSE BUTTON
+=========================== */
+
+.share-close{
+
+    position:absolute;
+
+    top:15px;
+
+    right:18px;
+
+    width:32px;
+
+    height:32px;
+
+    border:none;
+
+    background:#F1F5F9;
+
+    color:#64748B;
+
+    border-radius:50%;
+
+    font-size:22px;
+
+    line-height:1;
+
+    cursor:pointer;
+
+}
+
+.share-close:hover{
+
+    background:#E2E8F0;
+
+    color:#111827;
+
+}
+
+
+/* ===========================
+   SHARE ICON
+=========================== */
+
+.share-icon{
+
+    width:54px;
+
+    height:54px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:0 auto 15px;
+
+    border-radius:15px;
+
+    background:#EDE9FE;
+
+    font-size:25px;
+
+}
+
+
+/* ===========================
+   TITLE
+=========================== */
+
+.share-modal h2{
+
+    text-align:center;
+
+    margin:0;
+
+    color:#111827;
+
+    font-size:25px;
+
+}
+
+.share-subtitle{
+
+    text-align:center;
+
+    color:#64748B;
+
+    margin:8px 0 25px;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+}
+
+
+/* ===========================
+   LABELS
+=========================== */
+
+.share-modal label{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:7px;
+
+    color:#374151;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+/* ===========================
+   INPUTS
+=========================== */
+
+.share-modal input{
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:13px 14px;
+
+    margin-bottom:18px;
+
+    border:1px solid #CBD5E1;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    color:#111827;
+
+    background:white;
+
+}
+
+.share-modal input:focus{
+
+    outline:none;
+
+    border-color:#7C3AED;
+
+    box-shadow:0 0 0 3px rgba(124,58,237,.12);
+
+}
+
+.share-modal input:disabled{
+
+    background:#F8FAFC;
+
+    cursor:not-allowed;
+
+}
+
+
+/* ===========================
+   OPTIONAL TEXT
+=========================== */
+
+.optional{
+
+    color:#94A3B8;
+
+    font-size:12px;
+
+    font-weight:400;
+
+}
+
+
+/* ===========================
+   HINT
+=========================== */
+
+.share-hint{
+
+    color:#94A3B8;
+
+    font-size:12px;
+
+    margin:-8px 0 18px;
+
+}
+
+
+/* ===========================
+   SUCCESS / ERROR
+=========================== */
+
+.share-success{
+
+    background:#DCFCE7;
+
+    color:#166534;
+
+    border:1px solid #BBF7D0;
+
+    padding:11px 13px;
+
+    border-radius:9px;
+
+    font-size:13px;
+
+    text-align:center;
+
+    margin-bottom:15px;
+
+}
+
+.share-error{
+
+    background:#FEE2E2;
+
+    color:#991B1B;
+
+    border:1px solid #FECACA;
+
+    padding:11px 13px;
+
+    border-radius:9px;
+
+    font-size:13px;
+
+    text-align:center;
+
+    margin-bottom:15px;
+
+}
+
+
+/* ===========================
+   ACTION BUTTONS
+=========================== */
+
+.share-actions{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:5px;
+
+}
+
+.share-actions button{
+
+    flex:1;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.share-cancel{
+
+    background:#E2E8F0;
+
+    color:#334155;
+
+}
+
+.share-cancel:hover{
+
+    background:#CBD5E1;
+
+}
+
+.share-confirm{
+
+    background:#7C3AED;
+
+    color:white;
+
+}
+
+.share-confirm:hover{
+
+    background:#6D28D9;
+
+}
+
+.share-actions button:disabled{
+
+    opacity:.6;
+
+    cursor:not-allowed;
+
+}
+
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media(max-width:500px){
+
+    .share-modal{
+
+        padding:25px 20px;
+
+    }
+
+    .share-actions{
+
+        flex-direction:column;
+
+    }
+
+}
+.vault-actions {
+
+    display: flex;
+
+    gap: 12px;
+
+    align-items: center;
+
+}
+
+.shared-btn {
+
+    background: #0f766e;
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 20px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    transition: .3s;
+
+}
+
+.shared-btn:hover {
+
+    background: #115e59;
+
+    transform: translateY(-3px);
+
+}
+
+@media(max-width:768px) {
+
+    .vault-actions {
+
+        width: 100%;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .shared-btn,
+    .add-btn {
+
+        width: 100%;
+
+    }
+
+}

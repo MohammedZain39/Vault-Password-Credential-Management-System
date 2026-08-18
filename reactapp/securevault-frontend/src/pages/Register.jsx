@@ -4,6 +4,7 @@ import { FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import API from "../services/api";
 import "./Register.css";
 import { generatePassword } from "../utils/passwordGenerator";
+import { checkPasswordStrength } from "../utils/passwordStrength";
 
 function Register() {
 
@@ -22,6 +23,9 @@ function Register() {
   const newPassword = generatePassword();
   setPassword(newPassword);
   };
+
+  const strength = checkPasswordStrength(password);
+
   const handleRegister = async (e) => {
 
     e.preventDefault();
@@ -142,14 +146,6 @@ function Register() {
     onChange={(e) => setPassword(e.target.value)}
   />
 
-  <button
-    type="button"
-    className="generate-btn"
-    onClick={handleGeneratePassword}
-  >
-    Generate
-  </button>
-
   <span
     className="eye"
     onClick={() => setShowPassword(!showPassword)}
@@ -158,6 +154,51 @@ function Register() {
   </span>
 
 </div>
+
+{/* Password Strength */}
+
+{password.length > 0 && (
+
+<div className="strength-container">
+
+    <div className="strength-header">
+
+        <span className="strength-label">
+            Password Strength
+        </span>
+
+        <span
+            className="strength-text"
+            style={{ color: strength.color }}
+        >
+            {strength.text}
+        </span>
+
+    </div>
+
+    <div className="strength-bar">
+
+        <div
+            className="strength-fill"
+            style={{
+                width: strength.width,
+                backgroundColor: strength.color
+            }}
+        ></div>
+
+    </div>
+
+</div>
+
+)}
+
+<button
+  type="button"
+  className="generate-btn"
+  onClick={handleGeneratePassword}
+>
+  Generate
+</button>
 
         {message && (
 

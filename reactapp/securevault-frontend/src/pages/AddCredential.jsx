@@ -100,16 +100,27 @@ const [showPassword, setShowPassword] = useState(false);
                     required
                 />
 
-                <div className="password-field">
+               <div className="password-field">
 
-    <input
-        type={showPassword ? "text" : "password"}
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-        required
-    />
+    <div className="password-input">
+
+        <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+        />
+
+        <span
+            className="eye-btn"
+            onClick={() => setShowPassword(!showPassword)}
+        >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </span>
+
+    </div>
 
     <button
         type="button"
@@ -118,14 +129,6 @@ const [showPassword, setShowPassword] = useState(false);
     >
         Generate
     </button>
-
-    <button
-    type="button"
-    className="eye-btn"
-    onClick={() => setShowPassword(!showPassword)}
->
-    {showPassword ? <FaEyeSlash /> : <FaEye />}
-</button>
 
 </div>
 

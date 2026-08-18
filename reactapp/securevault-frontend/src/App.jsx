@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AddCredential from "./pages/AddCredential";
 import EditCredential from "./pages/EditCredential";
 import ViewCredential from "./pages/ViewCredential";
+import SharedCredentials from "./pages/SharedCredentials";
 
 
 function App() {
@@ -44,6 +45,12 @@ function App() {
     </ProtectedRoute>
   }
 />
+<Route
+    path="/shared-credentials"
+    element={<SharedCredentials />}
+/>
+
+
 
 <Route
   path="/profile"

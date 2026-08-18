@@ -20,6 +20,17 @@ function Vault() {
 
   const [message, setMessage] = useState("");
 
+  // ==========================
+  // SHARE STATE
+  // ==========================
+
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedCredential, setSelectedCredential] = useState(null);
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
+  const [shareMessage, setShareMessage] = useState("");
+  const [sharing, setSharing] = useState(false);
+
   useEffect(() => {
 
     async function loadVault() {
@@ -79,9 +90,7 @@ function Vault() {
     try {
 
       const response = await API.post("/vault/create-pin", {
-
         pin,
-
       });
 
       setMessage(response.data.message);
@@ -94,11 +103,8 @@ function Vault() {
     } catch (error) {
 
       setMessage(
-
         error.response?.data?.message ||
-
         "Failed to create PIN"
-
       );
 
     }
@@ -110,9 +116,7 @@ function Vault() {
     try {
 
       const response = await API.post("/vault/verify-pin", {
-
         pin,
-
       });
 
       setMessage(response.data.message);
@@ -126,11 +130,8 @@ function Vault() {
     } catch (error) {
 
       setMessage(
-
         error.response?.data?.message ||
-
         "Invalid PIN"
-
       );
 
     }
@@ -140,9 +141,7 @@ function Vault() {
   async function deleteCredential(id) {
 
     const confirmDelete = window.confirm(
-
       "Are you sure you want to delete this credential?"
-
     );
 
     if (!confirmDelete) return;
@@ -150,9 +149,7 @@ function Vault() {
     try {
 
       const response = await API.delete(
-
         `/credentials/${id}`
-
       );
 
       alert(response.data.message);
@@ -162,12 +159,101 @@ function Vault() {
     } catch (error) {
 
       alert(
-
         error.response?.data?.message ||
-
         "Failed to delete credential."
-
       );
+
+    }
+
+  }
+
+  // ==========================
+  // OPEN SHARE MODAL
+  // ==========================
+
+  function openShareModal(credential) {
+
+    setSelectedCredential(credential);
+    setRecipientEmail("");
+    setExpiresAt("");
+    setShareMessage("");
+    setShowShareModal(true);
+
+  }
+
+  // ==========================
+  // CLOSE SHARE MODAL
+  // ==========================
+
+  function closeShareModal() {
+
+    if (sharing) return;
+
+    setShowShareModal(false);
+    setSelectedCredential(null);
+    setRecipientEmail("");
+    setExpiresAt("");
+    setShareMessage("");
+
+  }
+
+  // ==========================
+  // SHARE CREDENTIAL
+  // ==========================
+
+  async function shareCredential() {
+
+    if (!recipientEmail.trim()) {
+
+      setShareMessage("Please enter the recipient email.");
+
+      return;
+
+    }
+
+    setSharing(true);
+    setShareMessage("");
+
+    try {
+
+      let url =
+        `/credentials/${selectedCredential.id}/share` +
+        `?email=${encodeURIComponent(recipientEmail.trim())}`;
+
+      if (expiresAt) {
+
+        url += `&expiresAt=${encodeURIComponent(
+          expiresAt
+        )}`;
+
+      }
+
+      const response = await API.post(url);
+
+      setShareMessage(
+        response.data.message ||
+        "Credential shared successfully."
+      );
+
+      setRecipientEmail("");
+      setExpiresAt("");
+
+      setTimeout(() => {
+
+        closeShareModal();
+
+      }, 1500);
+
+    } catch (error) {
+
+      setShareMessage(
+        error.response?.data?.message ||
+        "Failed to share credential."
+      );
+
+    } finally {
+
+      setSharing(false);
 
     }
 
@@ -211,7 +297,7 @@ function Vault() {
 
     <MainLayout>
 
-           {/* CREATE PIN */}
+      {/* CREATE PIN */}
 
       {!hasPin && (
 
@@ -219,7 +305,9 @@ function Vault() {
 
           <h1>Create Master PIN</h1>
 
-          <p>Create a secure 4-digit PIN to protect your vault.</p>
+          <p>
+            Create a secure 4-digit PIN to protect your vault.
+          </p>
 
           <input
             type="password"
@@ -282,12 +370,23 @@ function Vault() {
 
             <h1>🔐 Secure Vault</h1>
 
-            <button
-              className="add-btn"
-              onClick={() => navigate("/add-credential")}
-            >
-              + Add Credential
-            </button>
+            <div className="vault-actions">
+
+    <button
+        className="shared-btn"
+        onClick={() => navigate("/shared-credentials")}
+    >
+        ↗ Shared With Me
+    </button>
+
+    <button
+        className="add-btn"
+        onClick={() => navigate("/add-credential")}
+    >
+        + Add Credential
+    </button>
+
+</div>
 
           </div>
 
@@ -301,67 +400,189 @@ function Vault() {
 
           {filteredCredentials.length === 0 ? (
 
-            <p>No credentials found.</p>
+            <p className="empty-state">
+              No credentials found.
+            </p>
 
           ) : (
 
-            filteredCredentials.map((credential) => (
+            <div className="credentials-grid">
 
-              <div
-                className="credential-card"
-                key={credential.id}
-              >
+              {filteredCredentials.map((credential) => (
 
-                <h3>{credential.title}</h3>
+                <div
+                  className="credential-card"
+                  key={credential.id}
+                >
 
-                <p>
-                  <strong>Username:</strong>{" "}
-                  {credential.username}
-                </p>
+                  <h3>{credential.title}</h3>
 
-                <p>
-                  <strong>Website:</strong>{" "}
-                  {credential.website}
-                </p>
+                  <p>
+                    <strong>Username:</strong>{" "}
+                    {credential.username}
+                  </p>
 
-                <p>
-                  <strong>Category:</strong>{" "}
-                  {credential.category}
-                </p>
+                  <p>
+                    <strong>Website:</strong>{" "}
+                    {credential.website}
+                  </p>
 
-                <div className="card-buttons">
+                  <p>
+                    <strong>Category:</strong>{" "}
+                    {credential.category || "General"}
+                  </p>
 
-                  <button
-                    onClick={() =>
-                      navigate(`/credential/${credential.id}`)
-                    }
-                  >
-                    👁 View
-                  </button>
+                  <div className="card-buttons">
 
-                  <button
-                    onClick={() =>
-                      navigate(`/edit-credential/${credential.id}`)
-                    }
-                  >
-                    ✏ Edit
-                  </button>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/credential/${credential.id}`
+                        )
+                      }
+                    >
+                      👁 View
+                    </button>
 
-                  <button
-                    onClick={() =>
-                      deleteCredential(credential.id)
-                    }
-                  >
-                    🗑 Delete
-                  </button>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/edit-credential/${credential.id}`
+                        )
+                      }
+                    >
+                      ✏ Edit
+                    </button>
+
+                    <button
+                      className="share-card-btn"
+                      onClick={() =>
+                        openShareModal(credential)
+                      }
+                    >
+                      🔗 Share
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        deleteCredential(credential.id)
+                      }
+                    >
+                      🗑 Delete
+                    </button>
+
+                  </div>
 
                 </div>
 
-              </div>
+              ))}
 
-            ))
+            </div>
 
           )}
+
+        </div>
+
+      )}
+
+      {/* ==========================
+          SHARE MODAL
+      ========================== */}
+
+      {showShareModal && selectedCredential && (
+
+        <div className="share-overlay">
+
+          <div className="share-modal">
+
+            <button
+              className="share-close"
+              onClick={closeShareModal}
+              disabled={sharing}
+            >
+              ×
+            </button>
+
+            <div className="share-icon">
+              🔗
+            </div>
+
+            <h2>Share Credential</h2>
+
+            <p className="share-subtitle">
+              Share <strong>{selectedCredential.title}</strong>{" "}
+              securely with another user.
+            </p>
+
+            <label>
+              Recipient Email
+            </label>
+
+            <input
+              type="email"
+              placeholder="recipient@example.com"
+              value={recipientEmail}
+              onChange={(e) =>
+                setRecipientEmail(e.target.value)
+              }
+              disabled={sharing}
+            />
+
+            <label>
+              Access Expires
+              <span className="optional">
+                Optional
+              </span>
+            </label>
+
+            <input
+              type="datetime-local"
+              value={expiresAt}
+              onChange={(e) =>
+                setExpiresAt(e.target.value)
+              }
+              disabled={sharing}
+            />
+
+            <p className="share-hint">
+              Leave the expiry empty for permanent access.
+            </p>
+
+            {shareMessage && (
+
+              <div
+                className={
+                  shareMessage.toLowerCase().includes("success")
+                    ? "share-success"
+                    : "share-error"
+                }
+              >
+                {shareMessage}
+              </div>
+
+            )}
+
+            <div className="share-actions">
+
+              <button
+                className="share-cancel"
+                onClick={closeShareModal}
+                disabled={sharing}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="share-confirm"
+                onClick={shareCredential}
+                disabled={sharing}
+              >
+                {sharing ? "Sharing..." : "Share Credential"}
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
 
