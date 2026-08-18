@@ -3,16 +3,19 @@ package com.securevault.backend.controller;
 import com.securevault.backend.dto.AuthResponse;
 import com.securevault.backend.dto.CreateCredentialRequest;
 import com.securevault.backend.dto.CredentialResponse;
-import com.securevault.backend.service.CredentialService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import com.securevault.backend.dto.RevealPasswordRequest;
 import com.securevault.backend.dto.RevealPasswordResponse;
+import com.securevault.backend.dto.SharedCredentialResponse;
+import com.securevault.backend.service.CredentialService;
 
+import jakarta.validation.Valid;
 
+import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -23,6 +26,11 @@ public class CredentialController {
 
     private final CredentialService credentialService;
 
+
+    // ==========================
+    // ADD CREDENTIAL
+    // ==========================
+
     @PostMapping
     public ResponseEntity<AuthResponse> addCredential(
             @Valid @RequestBody CreateCredentialRequest request) {
@@ -32,6 +40,11 @@ public class CredentialController {
         );
     }
 
+
+    // ==========================
+    // GET ALL CREDENTIALS
+    // ==========================
+
     @GetMapping
     public ResponseEntity<List<CredentialResponse>> getAllCredentials() {
 
@@ -39,6 +52,25 @@ public class CredentialController {
                 credentialService.getAllCredentials()
         );
     }
+
+
+    // ==========================
+    // GET SHARED CREDENTIALS
+    // IMPORTANT: Keep this BEFORE /{id}
+    // ==========================
+
+    @GetMapping("/shared")
+    public ResponseEntity<List<SharedCredentialResponse>> getSharedCredentials() {
+
+        return ResponseEntity.ok(
+                credentialService.getSharedCredentials()
+        );
+    }
+
+
+    // ==========================
+    // GET ONE CREDENTIAL
+    // ==========================
 
     @GetMapping("/{id}")
     public ResponseEntity<CredentialResponse> getCredential(
@@ -48,6 +80,11 @@ public class CredentialController {
                 credentialService.getCredential(id)
         );
     }
+
+
+    // ==========================
+    // UPDATE CREDENTIAL
+    // ==========================
 
     @PutMapping("/{id}")
     public ResponseEntity<AuthResponse> updateCredential(
@@ -59,6 +96,11 @@ public class CredentialController {
         );
     }
 
+
+    // ==========================
+    // DELETE CREDENTIAL
+    // ==========================
+
     @DeleteMapping("/{id}")
     public ResponseEntity<AuthResponse> deleteCredential(
             @PathVariable Long id) {
@@ -67,17 +109,40 @@ public class CredentialController {
                 credentialService.deleteCredential(id)
         );
     }
-    
+
+
+    // ==========================
+    // REVEAL PASSWORD
+    // ==========================
+
     @PostMapping("/{id}/reveal")
     public ResponseEntity<RevealPasswordResponse> revealPassword(
             @PathVariable Long id,
-            @RequestBody RevealPasswordRequest request
-    ) {
+            @RequestBody RevealPasswordRequest request) {
 
         return ResponseEntity.ok(
                 credentialService.revealPassword(id, request)
         );
+    }
 
+
+    // ==========================
+    // SHARE CREDENTIAL
+    // ==========================
+
+    @PostMapping("/{id}/share")
+    public ResponseEntity<AuthResponse> shareCredential(
+            @PathVariable Long id,
+            @RequestParam String email,
+            @RequestParam(required = false) LocalDateTime expiresAt) {
+
+        return ResponseEntity.ok(
+                credentialService.shareCredential(
+                        id,
+                        email,
+                        expiresAt
+                )
+        );
     }
 
 }

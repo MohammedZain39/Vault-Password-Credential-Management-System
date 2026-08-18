@@ -13,6 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.securevault.backend.dto.SharedCredentialResponse;
+import com.securevault.backend.entity.CredentialShare;
+import com.securevault.backend.repository.CredentialShareRepository;
+
+
+import java.time.LocalDateTime;
+
 
 import java.util.List;
 
@@ -22,6 +29,7 @@ public class CredentialServiceImpl implements CredentialService {
 
     private final CredentialRepository credentialRepository;
     private final UserRepository userRepository;
+    private final CredentialShareRepository credentialShareRepository;
     private final EncryptionService encryptionService;
     private final VaultService vaultService;
 
@@ -221,6 +229,144 @@ public class CredentialServiceImpl implements CredentialService {
         );
 
         return new RevealPasswordResponse(password);
+    }
+
+    // ==========================
+// SHARE CREDENTIAL
+// ==========================
+
+    @Override
+    public AuthResponse shareCredential(
+            Long credentialId,
+            String recipientEmail,
+            LocalDateTime expiresAt
+    ) {
+
+        User sender = getLoggedInUser();
+
+        // Find credential
+        Credential credential = credentialRepository.findById(credentialId)
+                .orElseThrow(() ->
+                        new RuntimeException("Credential not found"));
+
+        // Make sure logged-in user owns the credential
+        if (!credential.getUser().getId().equals(sender.getId())) {
+            throw new RuntimeException("Access denied");
+        }
+
+        // Find recipient
+        User recipient = userRepository.findByEmail(recipientEmail)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User with this email is not registered"
+                        ));
+
+        // Prevent sharing with yourself
+        if (sender.getId().equals(recipient.getId())) {
+            throw new RuntimeException(
+                    "You cannot share a credential with yourself"
+            );
+        }
+
+        // Check if already shared
+        if (credentialShareRepository
+                .existsByCredentialIdAndSharedWith(
+                        credentialId,
+                        recipient
+                )) {
+
+            throw new RuntimeException(
+                    "Credential is already shared with this user"
+            );
+        }
+
+        // Validate expiry
+        if (expiresAt != null &&
+                expiresAt.isBefore(LocalDateTime.now())) {
+
+            throw new RuntimeException(
+                    "Expiry date must be in the future"
+            );
+        }
+
+        CredentialShare share = CredentialShare.builder()
+                .credential(credential)
+                .sharedBy(sender)
+                .sharedWith(recipient)
+                .expiresAt(expiresAt)
+                .active(true)
+                .build();
+
+        credentialShareRepository.save(share);
+
+        return new AuthResponse(
+                "Credential shared successfully with "
+                        + recipient.getEmail()
+        );
+    }
+
+    // ==========================
+// GET SHARED CREDENTIALS
+// ==========================
+
+    @Override
+    public List<SharedCredentialResponse> getSharedCredentials() {
+
+        User user = getLoggedInUser();
+
+        return credentialShareRepository
+                .findBySharedWith(user)
+                .stream()
+
+                // Automatically ignore expired/inactive shares
+                .filter(share ->
+                        Boolean.TRUE.equals(share.getActive())
+                                &&
+                                (
+                                        share.getExpiresAt() == null
+                                                ||
+                                                share.getExpiresAt()
+                                                        .isAfter(LocalDateTime.now())
+                                )
+                )
+
+                .map(share -> {
+
+                    Credential credential =
+                            share.getCredential();
+
+                    return SharedCredentialResponse.builder()
+                            .shareId(share.getId())
+                            .credentialId(credential.getId())
+                            .title(credential.getTitle())
+                            .website(credential.getWebsite())
+                            .username(credential.getUsername())
+
+                            // Decrypt only when authorized
+                            .password(
+                                    encryptionService.decrypt(
+                                            credential.getPassword()
+                                    )
+                            )
+
+                            .category(credential.getCategory())
+                            .notes(credential.getNotes())
+
+                            .sharedBy(
+                                    share.getSharedBy().getEmail()
+                            )
+
+                            .sharedAt(
+                                    share.getSharedAt()
+                            )
+
+                            .expiresAt(
+                                    share.getExpiresAt()
+                            )
+
+                            .build();
+                })
+                .toList();
     }
 
 }
