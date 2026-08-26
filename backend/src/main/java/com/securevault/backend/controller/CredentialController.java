@@ -6,6 +6,7 @@ import com.securevault.backend.dto.CredentialResponse;
 import com.securevault.backend.dto.RevealPasswordRequest;
 import com.securevault.backend.dto.RevealPasswordResponse;
 import com.securevault.backend.dto.SharedCredentialResponse;
+import com.securevault.backend.entity.PermissionLevel;
 import com.securevault.backend.service.CredentialService;
 
 import jakarta.validation.Valid;
@@ -134,13 +135,15 @@ public class CredentialController {
     public ResponseEntity<AuthResponse> shareCredential(
             @PathVariable Long id,
             @RequestParam String email,
-            @RequestParam(required = false) LocalDateTime expiresAt) {
+            @RequestParam(required = false) LocalDateTime expiresAt,
+            @RequestParam(required = false) PermissionLevel permissionLevel) {
 
         return ResponseEntity.ok(
                 credentialService.shareCredential(
                         id,
                         email,
-                        expiresAt
+                        expiresAt,
+                        permissionLevel
                 )
         );
     }

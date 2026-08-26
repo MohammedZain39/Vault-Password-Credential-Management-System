@@ -14,7 +14,7 @@ import AddCredential from "./pages/AddCredential";
 import EditCredential from "./pages/EditCredential";
 import ViewCredential from "./pages/ViewCredential";
 import SharedCredentials from "./pages/SharedCredentials";
-
+import Security from "./pages/Security";
 
 function App() {
   return (
@@ -49,7 +49,14 @@ function App() {
     path="/shared-credentials"
     element={<SharedCredentials />}
 />
-
+<Route
+  path="/security"
+  element={
+    <ProtectedRoute>
+      <Security />
+    </ProtectedRoute>
+  }
+/>
 
 
 <Route

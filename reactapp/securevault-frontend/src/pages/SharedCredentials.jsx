@@ -1,19 +1,33 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import API from "../services/api";
-import { FaEye, FaEyeSlash, FaShareAlt, FaClock } from "react-icons/fa";
+import {
+    FaEye,
+    FaEyeSlash,
+    FaShareAlt,
+    FaClock,
+    FaEdit,
+    FaLock
+} from "react-icons/fa";
 import "./SharedCredentials.css";
 
 function SharedCredentials() {
+
+    const navigate = useNavigate();
 
     const [credentials, setCredentials] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [visiblePasswords, setVisiblePasswords] = useState({});
 
+
     useEffect(() => {
+
         fetchSharedCredentials();
+
     }, []);
+
 
     async function fetchSharedCredentials() {
 
@@ -40,6 +54,7 @@ function SharedCredentials() {
 
     }
 
+
     function togglePassword(id) {
 
         setVisiblePasswords(prev => ({
@@ -49,6 +64,7 @@ function SharedCredentials() {
 
     }
 
+
     function formatDate(date) {
 
         if (!date) return "No expiry";
@@ -57,6 +73,7 @@ function SharedCredentials() {
 
     }
 
+
     function isExpired(date) {
 
         if (!date) return false;
@@ -64,6 +81,33 @@ function SharedCredentials() {
         return new Date(date) <= new Date();
 
     }
+
+
+    /*
+     * ==========================
+     * PERMISSION HELPERS
+     * ==========================
+     */
+
+    function isEditAllowed(credential) {
+
+        return credential.permissionLevel === "EDIT";
+
+    }
+
+
+    function getPermissionLabel(permission) {
+
+        if (permission === "EDIT") {
+
+            return "Edit Access";
+
+        }
+
+        return "View Only";
+
+    }
+
 
     if (loading) {
 
@@ -81,13 +125,17 @@ function SharedCredentials() {
 
     }
 
+
     return (
 
         <MainLayout>
 
             <div className="shared-page">
 
-                {/* HEADER */}
+
+                {/* ==========================
+                    HEADER
+                ========================== */}
 
                 <div className="shared-header">
 
@@ -107,6 +155,7 @@ function SharedCredentials() {
 
                     </div>
 
+
                     <div className="shared-count">
 
                         {credentials.length}
@@ -122,7 +171,9 @@ function SharedCredentials() {
                 </div>
 
 
-                {/* ERROR */}
+                {/* ==========================
+                    ERROR
+                ========================== */}
 
                 {message && (
 
@@ -135,7 +186,9 @@ function SharedCredentials() {
                 )}
 
 
-                {/* EMPTY STATE */}
+                {/* ==========================
+                    EMPTY STATE
+                ========================== */}
 
                 {credentials.length === 0 && !message && (
 
@@ -159,7 +212,9 @@ function SharedCredentials() {
                 )}
 
 
-                {/* CREDENTIALS */}
+                {/* ==========================
+                    CREDENTIALS
+                ========================== */}
 
                 {credentials.length > 0 && (
 
@@ -173,6 +228,10 @@ function SharedCredentials() {
                             const visible =
                                 visiblePasswords[credential.shareId];
 
+                            const canEdit =
+                                isEditAllowed(credential);
+
+
                             return (
 
                                 <div
@@ -182,14 +241,15 @@ function SharedCredentials() {
                                     key={credential.shareId}
                                 >
 
-                                    {/* CARD TOP */}
+
+                                    {/* ==========================
+                                        CARD TOP
+                                    ========================== */}
 
                                     <div className="shared-card-top">
 
                                         <div className="credential-icon">
-
                                             🔐
-
                                         </div>
 
                                         <div>
@@ -210,7 +270,38 @@ function SharedCredentials() {
                                     </div>
 
 
-                                    {/* WEBSITE */}
+                                    {/* ==========================
+                                        PERMISSION
+                                    ========================== */}
+
+                                    <div
+                                        className={`permission-badge ${
+                                            canEdit
+                                                ? "permission-edit"
+                                                : "permission-view"
+                                        }`}
+                                    >
+
+                                        {canEdit ? (
+                                            <FaEdit />
+                                        ) : (
+                                            <FaLock />
+                                        )}
+
+                                        <span>
+
+                                            {getPermissionLabel(
+                                                credential.permissionLevel
+                                            )}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    {/* ==========================
+                                        WEBSITE
+                                    ========================== */}
 
                                     <div className="credential-row">
 
@@ -225,7 +316,9 @@ function SharedCredentials() {
                                     </div>
 
 
-                                    {/* USERNAME */}
+                                    {/* ==========================
+                                        USERNAME
+                                    ========================== */}
 
                                     <div className="credential-row">
 
@@ -240,7 +333,9 @@ function SharedCredentials() {
                                     </div>
 
 
-                                    {/* PASSWORD */}
+                                    {/* ==========================
+                                        PASSWORD
+                                    ========================== */}
 
                                     <div className="credential-row password-row">
 
@@ -283,7 +378,9 @@ function SharedCredentials() {
                                     </div>
 
 
-                                    {/* SHARED BY */}
+                                    {/* ==========================
+                                        SHARED BY
+                                    ========================== */}
 
                                     <div className="shared-by">
 
@@ -298,7 +395,9 @@ function SharedCredentials() {
                                     </div>
 
 
-                                    {/* EXPIRY */}
+                                    {/* ==========================
+                                        EXPIRY
+                                    ========================== */}
 
                                     <div className="expiry-row">
 
@@ -313,10 +412,13 @@ function SharedCredentials() {
                                         ) : credential.expiresAt ? (
 
                                             <span>
+
                                                 Expires:{" "}
+
                                                 {formatDate(
                                                     credential.expiresAt
                                                 )}
+
                                             </span>
 
                                         ) : (
@@ -330,7 +432,9 @@ function SharedCredentials() {
                                     </div>
 
 
-                                    {/* NOTES */}
+                                    {/* ==========================
+                                        NOTES
+                                    ========================== */}
 
                                     {credential.notes && (
 
@@ -348,6 +452,78 @@ function SharedCredentials() {
 
                                     )}
 
+
+                                    {/* ==========================
+                                        ACTIONS
+                                    ========================== */}
+
+                                    <div className="shared-actions">
+
+
+                                        {/* VIEW */}
+
+                                        <button
+                                            type="button"
+                                            className="shared-view-btn"
+                                            onClick={() =>
+                                                navigate(
+                                                    `/credential/${credential.credentialId}`
+                                                )
+                                            }
+                                            disabled={expired}
+                                        >
+
+                                            <FaEye />
+
+                                            View
+
+                                        </button>
+
+
+                                        {/* EDIT ONLY IF EDIT ACCESS */}
+
+                                        {canEdit && !expired && (
+
+                                            <button
+                                                type="button"
+                                                className="shared-edit-btn"
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/edit-credential/${credential.credentialId}`
+                                                    )
+                                                }
+                                            >
+
+                                                <FaEdit />
+
+                                                Edit
+
+                                            </button>
+
+                                        )}
+
+                                    </div>
+
+
+                                    {/* ==========================
+                                        VIEW ONLY MESSAGE
+                                    ========================== */}
+
+                                    {!canEdit && !expired && (
+
+                                        <div className="view-only-message">
+
+                                            <FaLock />
+
+                                            <span>
+                                                View only access
+                                            </span>
+
+                                        </div>
+
+                                    )}
+
+
                                 </div>
 
                             );
@@ -358,6 +534,7 @@ function SharedCredentials() {
 
                 )}
 
+
             </div>
 
         </MainLayout>
@@ -365,5 +542,6 @@ function SharedCredentials() {
     );
 
 }
+
 
 export default SharedCredentials;

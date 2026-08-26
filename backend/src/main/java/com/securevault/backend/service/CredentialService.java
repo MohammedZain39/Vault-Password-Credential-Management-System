@@ -6,6 +6,7 @@ import com.securevault.backend.dto.CredentialResponse;
 import com.securevault.backend.dto.RevealPasswordRequest;
 import com.securevault.backend.dto.RevealPasswordResponse;
 import com.securevault.backend.dto.SharedCredentialResponse;
+import com.securevault.backend.entity.PermissionLevel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +44,8 @@ public interface CredentialService {
     AuthResponse shareCredential(
             Long credentialId,
             String recipientEmail,
-            LocalDateTime expiresAt
+            LocalDateTime expiresAt,
+            PermissionLevel permissionLevel
     );
 
     // ==========================

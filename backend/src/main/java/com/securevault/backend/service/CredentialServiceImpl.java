@@ -5,22 +5,20 @@ import com.securevault.backend.dto.CreateCredentialRequest;
 import com.securevault.backend.dto.CredentialResponse;
 import com.securevault.backend.dto.RevealPasswordRequest;
 import com.securevault.backend.dto.RevealPasswordResponse;
+import com.securevault.backend.dto.SharedCredentialResponse;
 import com.securevault.backend.entity.Credential;
+import com.securevault.backend.entity.CredentialShare;
+import com.securevault.backend.entity.PermissionLevel;
 import com.securevault.backend.entity.User;
 import com.securevault.backend.repository.CredentialRepository;
+import com.securevault.backend.repository.CredentialShareRepository;
 import com.securevault.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.securevault.backend.dto.SharedCredentialResponse;
-import com.securevault.backend.entity.CredentialShare;
-import com.securevault.backend.repository.CredentialShareRepository;
-
 
 import java.time.LocalDateTime;
-
-
 import java.util.List;
 
 @Service
@@ -32,6 +30,11 @@ public class CredentialServiceImpl implements CredentialService {
     private final CredentialShareRepository credentialShareRepository;
     private final EncryptionService encryptionService;
     private final VaultService vaultService;
+
+
+    // ==========================
+    // GET LOGGED-IN USER
+    // ==========================
 
     private User getLoggedInUser() {
 
@@ -45,12 +48,15 @@ public class CredentialServiceImpl implements CredentialService {
                         new RuntimeException("User not found"));
     }
 
+
     // ==========================
     // ADD CREDENTIAL
     // ==========================
 
     @Override
-    public AuthResponse addCredential(CreateCredentialRequest request) {
+    public AuthResponse addCredential(
+            CreateCredentialRequest request
+    ) {
 
         User user = getLoggedInUser();
 
@@ -75,8 +81,9 @@ public class CredentialServiceImpl implements CredentialService {
         );
     }
 
+
     // ==========================
-    // GET ALL
+    // GET ALL CREDENTIALS
     // ==========================
 
     @Override
@@ -86,23 +93,26 @@ public class CredentialServiceImpl implements CredentialService {
 
         return credentialRepository.findByUser(user)
                 .stream()
-                .map(c -> CredentialResponse.builder()
-                        .id(c.getId())
-                        .title(c.getTitle())
-                        .website(c.getWebsite())
-                        .username(c.getUsername())
+                .map(c ->
+                        CredentialResponse.builder()
+                                .id(c.getId())
+                                .title(c.getTitle())
+                                .website(c.getWebsite())
+                                .username(c.getUsername())
 
-                        // Hidden on list screen
-                        .password("********")
+                                // Hide password in list
+                                .password("********")
 
-                        .category(c.getCategory())
-                        .notes(c.getNotes())
-                        .build())
+                                .category(c.getCategory())
+                                .notes(c.getNotes())
+                                .build()
+                )
                 .toList();
     }
 
+
     // ==========================
-    // GET ONE
+    // GET ONE CREDENTIAL
     // ==========================
 
     @Override
@@ -110,12 +120,19 @@ public class CredentialServiceImpl implements CredentialService {
 
         User user = getLoggedInUser();
 
-        Credential credential = credentialRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Credential not found"));
+        Credential credential =
+                credentialRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Credential not found"
+                                ));
 
+        // Only owner can access normal credential endpoint
         if (!credential.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Access denied");
+
+            throw new RuntimeException(
+                    "Access denied"
+            );
         }
 
         return CredentialResponse.builder()
@@ -124,7 +141,6 @@ public class CredentialServiceImpl implements CredentialService {
                 .website(credential.getWebsite())
                 .username(credential.getUsername())
 
-                // Never expose password here
                 .password(
                         encryptionService.decrypt(
                                 credential.getPassword()
@@ -136,8 +152,9 @@ public class CredentialServiceImpl implements CredentialService {
                 .build();
     }
 
+
     // ==========================
-    // UPDATE
+    // UPDATE CREDENTIAL
     // ==========================
 
     @Override
@@ -148,36 +165,132 @@ public class CredentialServiceImpl implements CredentialService {
 
         User user = getLoggedInUser();
 
-        Credential credential = credentialRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Credential not found"));
+        Credential credential =
+                credentialRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Credential not found"
+                                ));
 
-        if (!credential.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Access denied");
+
+        // ==========================================
+        // OWNER
+        // ==========================================
+
+        if (credential.getUser().getId().equals(user.getId())) {
+
+            credential.setTitle(request.getTitle());
+            credential.setWebsite(request.getWebsite());
+            credential.setUsername(request.getUsername());
+
+            credential.setPassword(
+                    encryptionService.encrypt(
+                            request.getPassword()
+                    )
+            );
+
+            credential.setCategory(request.getCategory());
+            credential.setNotes(request.getNotes());
+
+            credentialRepository.save(credential);
+
+            return new AuthResponse(
+                    "Credential updated successfully."
+            );
         }
 
-        credential.setTitle(request.getTitle());
-        credential.setWebsite(request.getWebsite());
-        credential.setUsername(request.getUsername());
 
-        credential.setPassword(
-                encryptionService.encrypt(
-                        request.getPassword()
-                )
-        );
+        // ==========================================
+        // SHARED USER
+        // ==========================================
 
-        credential.setCategory(request.getCategory());
-        credential.setNotes(request.getNotes());
+        CredentialShare share =
+                credentialShareRepository
+                        .findByCredentialIdAndSharedWith(
+                                id,
+                                user
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Access denied"
+                                ));
 
-        credentialRepository.save(credential);
 
-        return new AuthResponse(
-                "Credential updated successfully."
+        // ==========================================
+        // CHECK ACTIVE
+        // ==========================================
+
+        if (!Boolean.TRUE.equals(share.getActive())) {
+
+            throw new RuntimeException(
+                    "This credential share is no longer active."
+            );
+        }
+
+
+        // ==========================================
+        // CHECK EXPIRY
+        // ==========================================
+
+        if (share.getExpiresAt() != null &&
+                share.getExpiresAt()
+                        .isBefore(LocalDateTime.now())) {
+
+            throw new RuntimeException(
+                    "This credential share has expired."
+            );
+        }
+
+
+        // ==========================================
+        // VIEW ONLY
+        // ==========================================
+
+        if (share.getPermissionLevel()
+                == PermissionLevel.VIEW_ONLY) {
+
+            throw new RuntimeException(
+                    "You only have view-only access to this credential."
+            );
+        }
+
+
+        // ==========================================
+        // EDIT ACCESS
+        // ==========================================
+
+        if (share.getPermissionLevel()
+                == PermissionLevel.EDIT_ACCESS) {
+
+            credential.setTitle(request.getTitle());
+            credential.setWebsite(request.getWebsite());
+            credential.setUsername(request.getUsername());
+
+            credential.setPassword(
+                    encryptionService.encrypt(
+                            request.getPassword()
+                    )
+            );
+
+            credential.setCategory(request.getCategory());
+            credential.setNotes(request.getNotes());
+
+            credentialRepository.save(credential);
+
+            return new AuthResponse(
+                    "Credential updated successfully."
+            );
+        }
+
+
+        throw new RuntimeException(
+                "Invalid permission."
         );
     }
 
+
     // ==========================
-    // DELETE
+    // DELETE CREDENTIAL
     // ==========================
 
     @Override
@@ -185,12 +298,19 @@ public class CredentialServiceImpl implements CredentialService {
 
         User user = getLoggedInUser();
 
-        Credential credential = credentialRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Credential not found"));
+        Credential credential =
+                credentialRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Credential not found"
+                                ));
 
+        // Only owner can delete
         if (!credential.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Access denied");
+
+            throw new RuntimeException(
+                    "Access denied"
+            );
         }
 
         credentialRepository.delete(credential);
@@ -199,6 +319,7 @@ public class CredentialServiceImpl implements CredentialService {
                 "Credential deleted successfully."
         );
     }
+
 
     // ==========================
     // REVEAL PASSWORD
@@ -212,63 +333,88 @@ public class CredentialServiceImpl implements CredentialService {
 
         User user = getLoggedInUser();
 
-        Credential credential = credentialRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Credential not found"));
+        Credential credential =
+                credentialRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Credential not found"
+                                ));
 
+        // Only owner can currently reveal password
         if (!credential.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Access denied");
+
+            throw new RuntimeException(
+                    "Access denied"
+            );
         }
 
         // Verify Master PIN
-        vaultService.validatePin(request.getPin());
-
-        // Decrypt password
-        String password = encryptionService.decrypt(
-                credential.getPassword()
+        vaultService.validatePin(
+                request.getPin()
         );
 
-        return new RevealPasswordResponse(password);
+        // Decrypt password
+        String password =
+                encryptionService.decrypt(
+                        credential.getPassword()
+                );
+
+        return new RevealPasswordResponse(
+                password
+        );
     }
 
+
     // ==========================
-// SHARE CREDENTIAL
-// ==========================
+    // SHARE CREDENTIAL
+    // ==========================
 
     @Override
     public AuthResponse shareCredential(
             Long credentialId,
             String recipientEmail,
-            LocalDateTime expiresAt
+            LocalDateTime expiresAt,
+            PermissionLevel permissionLevel
     ) {
 
         User sender = getLoggedInUser();
 
-        // Find credential
-        Credential credential = credentialRepository.findById(credentialId)
-                .orElseThrow(() ->
-                        new RuntimeException("Credential not found"));
+        Credential credential =
+                credentialRepository.findById(credentialId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Credential not found"
+                                ));
 
-        // Make sure logged-in user owns the credential
+
+        // Only owner can share
         if (!credential.getUser().getId().equals(sender.getId())) {
-            throw new RuntimeException("Access denied");
+
+            throw new RuntimeException(
+                    "Access denied"
+            );
         }
 
-        // Find recipient
-        User recipient = userRepository.findByEmail(recipientEmail)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "User with this email is not registered"
-                        ));
 
-        // Prevent sharing with yourself
+        // Find recipient
+        User recipient =
+                userRepository.findByEmail(recipientEmail)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "User with this email is not registered"
+                                ));
+
+
+        // Prevent self-sharing
         if (sender.getId().equals(recipient.getId())) {
+
             throw new RuntimeException(
                     "You cannot share a credential with yourself"
             );
         }
 
-        // Check if already shared
+
+        // Check duplicate share
         if (credentialShareRepository
                 .existsByCredentialIdAndSharedWith(
                         credentialId,
@@ -280,6 +426,7 @@ public class CredentialServiceImpl implements CredentialService {
             );
         }
 
+
         // Validate expiry
         if (expiresAt != null &&
                 expiresAt.isBefore(LocalDateTime.now())) {
@@ -289,25 +436,41 @@ public class CredentialServiceImpl implements CredentialService {
             );
         }
 
-        CredentialShare share = CredentialShare.builder()
-                .credential(credential)
-                .sharedBy(sender)
-                .sharedWith(recipient)
-                .expiresAt(expiresAt)
-                .active(true)
-                .build();
+
+        // Default permission
+        if (permissionLevel == null) {
+
+            permissionLevel =
+                    PermissionLevel.VIEW_ONLY;
+        }
+
+
+        CredentialShare share =
+                CredentialShare.builder()
+                        .credential(credential)
+                        .sharedBy(sender)
+                        .sharedWith(recipient)
+                        .expiresAt(expiresAt)
+                        .active(true)
+                        .permissionLevel(permissionLevel)
+                        .build();
 
         credentialShareRepository.save(share);
+
 
         return new AuthResponse(
                 "Credential shared successfully with "
                         + recipient.getEmail()
+                        + " with "
+                        + permissionLevel
+                        + " permission."
         );
     }
 
+
     // ==========================
-// GET SHARED CREDENTIALS
-// ==========================
+    // GET SHARED CREDENTIALS
+    // ==========================
 
     @Override
     public List<SharedCredentialResponse> getSharedCredentials() {
@@ -318,16 +481,21 @@ public class CredentialServiceImpl implements CredentialService {
                 .findBySharedWith(user)
                 .stream()
 
-                // Automatically ignore expired/inactive shares
+                // Ignore inactive shares
                 .filter(share ->
-                        Boolean.TRUE.equals(share.getActive())
-                                &&
-                                (
-                                        share.getExpiresAt() == null
-                                                ||
-                                                share.getExpiresAt()
-                                                        .isAfter(LocalDateTime.now())
-                                )
+                        Boolean.TRUE.equals(
+                                share.getActive()
+                        )
+                )
+
+                // Ignore expired shares
+                .filter(share ->
+                        share.getExpiresAt() == null
+                                ||
+                                share.getExpiresAt()
+                                        .isAfter(
+                                                LocalDateTime.now()
+                                        )
                 )
 
                 .map(share -> {
@@ -336,24 +504,44 @@ public class CredentialServiceImpl implements CredentialService {
                             share.getCredential();
 
                     return SharedCredentialResponse.builder()
-                            .shareId(share.getId())
-                            .credentialId(credential.getId())
-                            .title(credential.getTitle())
-                            .website(credential.getWebsite())
-                            .username(credential.getUsername())
 
-                            // Decrypt only when authorized
+                            .shareId(
+                                    share.getId()
+                            )
+
+                            .credentialId(
+                                    credential.getId()
+                            )
+
+                            .title(
+                                    credential.getTitle()
+                            )
+
+                            .website(
+                                    credential.getWebsite()
+                            )
+
+                            .username(
+                                    credential.getUsername()
+                            )
+
                             .password(
                                     encryptionService.decrypt(
                                             credential.getPassword()
                                     )
                             )
 
-                            .category(credential.getCategory())
-                            .notes(credential.getNotes())
+                            .category(
+                                    credential.getCategory()
+                            )
+
+                            .notes(
+                                    credential.getNotes()
+                            )
 
                             .sharedBy(
-                                    share.getSharedBy().getEmail()
+                                    share.getSharedBy()
+                                            .getEmail()
                             )
 
                             .sharedAt(
@@ -364,9 +552,13 @@ public class CredentialServiceImpl implements CredentialService {
                                     share.getExpiresAt()
                             )
 
+                            .permissionLevel(
+                                    share.getPermissionLevel()
+                            )
+
                             .build();
                 })
+
                 .toList();
     }
-
 }

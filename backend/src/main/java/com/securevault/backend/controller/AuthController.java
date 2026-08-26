@@ -7,10 +7,13 @@ import com.securevault.backend.dto.RegisterRequest;
 import com.securevault.backend.dto.ResetPasswordRequest;
 import com.securevault.backend.dto.VerifyOtpRequest;
 import com.securevault.backend.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,16 +29,26 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(
             @Valid @RequestBody RegisterRequest request) {
 
-        return ResponseEntity.ok(authService.register(request));
+        return ResponseEntity.ok(
+                authService.register(request)
+        );
     }
 
     // ---------------- Login ----------------
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @Valid @RequestBody LoginRequest request) {
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest) {
 
-        return ResponseEntity.ok(authService.login(request));
+        String ipAddress = httpRequest.getRemoteAddr();
+
+        return ResponseEntity.ok(
+                authService.login(
+                        request,
+                        ipAddress
+                )
+        );
     }
 
     // ---------------- Forgot Password ----------------
@@ -44,7 +57,9 @@ public class AuthController {
     public ResponseEntity<AuthResponse> forgotPassword(
             @Valid @RequestBody ForgotPasswordRequest request) {
 
-        return ResponseEntity.ok(authService.forgotPassword(request));
+        return ResponseEntity.ok(
+                authService.forgotPassword(request)
+        );
     }
 
     // ---------------- Verify OTP ----------------
@@ -53,7 +68,9 @@ public class AuthController {
     public ResponseEntity<AuthResponse> verifyOtp(
             @Valid @RequestBody VerifyOtpRequest request) {
 
-        return ResponseEntity.ok(authService.verifyOtp(request));
+        return ResponseEntity.ok(
+                authService.verifyOtp(request)
+        );
     }
 
     // ---------------- Reset Password ----------------
@@ -62,6 +79,8 @@ public class AuthController {
     public ResponseEntity<AuthResponse> resetPassword(
             @Valid @RequestBody ResetPasswordRequest request) {
 
-        return ResponseEntity.ok(authService.resetPassword(request));
+        return ResponseEntity.ok(
+                authService.resetPassword(request)
+        );
     }
 }

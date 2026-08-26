@@ -1,5 +1,6 @@
 package com.securevault.backend.dto;
 
+import com.securevault.backend.entity.PermissionLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,6 @@ public class ShareCredentialRequest {
     private String email;
 
     private Integer expiryHours;
+
+    private PermissionLevel permissionLevel;
 }

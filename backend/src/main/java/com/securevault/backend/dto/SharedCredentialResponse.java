@@ -1,5 +1,6 @@
 package com.securevault.backend.dto;
 
+import com.securevault.backend.entity.PermissionLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,4 +37,7 @@ public class SharedCredentialResponse {
     private LocalDateTime sharedAt;
 
     private LocalDateTime expiresAt;
+
+    // Permission granted to the recipient
+    private PermissionLevel permissionLevel;
 }

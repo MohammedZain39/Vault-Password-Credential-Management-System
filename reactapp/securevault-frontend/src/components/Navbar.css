@@ -207,3 +207,695 @@ display:none;
 }
 
 }
+/* =========================
+   LOGIN ACTIVITY
+========================= */
+
+.activity-container {
+
+    position: relative;
+
+}
+
+
+/* LOGIN ACTIVITY BUTTON */
+
+.activity-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 18px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #CBD5E1;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+}
+
+.activity-btn:hover {
+
+    background: #1E293B;
+
+    color: white;
+
+}
+
+.activity-btn.activity-active {
+
+    background: #2563EB;
+
+    color: white;
+
+}
+
+
+/* =========================
+   DROPDOWN
+========================= */
+
+.activity-dropdown {
+
+    position: absolute;
+
+    top: 58px;
+
+    right: -80px;
+
+    width: 390px;
+
+    max-height: 500px;
+
+    background: #FFFFFF;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.30);
+
+    overflow: hidden;
+
+    z-index: 2000;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.activity-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    background: #F8FAFC;
+
+    border-bottom: 1px solid #E2E8F0;
+
+}
+
+.activity-header > div {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: #111827;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+}
+
+.activity-header svg {
+
+    color: #2563EB;
+
+}
+
+
+.activity-count {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 28px;
+
+    height: 28px;
+
+    padding: 0 8px;
+
+    border-radius: 20px;
+
+    background: #DBEAFE;
+
+    color: #2563EB;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================
+   ACTIVITY LIST
+========================= */
+
+.activity-list {
+
+    max-height: 420px;
+
+    overflow-y: auto;
+
+}
+
+
+/* =========================
+   ACTIVITY ITEM
+========================= */
+
+.activity-item {
+
+    display: flex;
+
+    gap: 14px;
+
+    padding: 17px 20px;
+
+    border-bottom: 1px solid #F1F5F9;
+
+    transition: .2s;
+
+}
+
+.activity-item:hover {
+
+    background: #F8FAFC;
+
+}
+
+
+.activity-status {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 36px;
+
+    height: 36px;
+
+    min-width: 36px;
+
+    border-radius: 50%;
+
+    font-size: 17px;
+
+}
+
+
+.activity-status.success {
+
+    background: #DCFCE7;
+
+    color: #16A34A;
+
+}
+
+
+.activity-status.failed {
+
+    background: #FEE2E2;
+
+    color: #DC2626;
+
+}
+
+
+/* =========================
+   ACTIVITY DETAILS
+========================= */
+
+.activity-details {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+.activity-title {
+
+    color: #111827;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    margin-bottom: 5px;
+
+}
+
+.activity-time {
+
+    color: #64748B;
+
+    font-size: 12px;
+
+}
+
+.activity-ip {
+
+    color: #94A3B8;
+
+    font-size: 11px;
+
+    margin-top: 4px;
+
+}
+
+
+/* =========================
+   EMPTY / LOADING
+========================= */
+
+.activity-empty {
+
+    padding: 35px 20px;
+
+    text-align: center;
+
+    color: #64748B;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.activity-list::-webkit-scrollbar {
+
+    width: 6px;
+
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+
+    background: #CBD5E1;
+
+    border-radius: 10px;
+
+}
+
+.activity-list::-webkit-scrollbar-track {
+
+    background: #F8FAFC;
+
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px) {
+
+    .activity-btn {
+
+        padding: 10px;
+
+    }
+
+    .activity-btn {
+
+        font-size: 0;
+
+    }
+
+    .activity-btn svg {
+
+        font-size: 16px;
+
+    }
+
+    .activity-dropdown {
+
+        right: -120px;
+
+        width: 350px;
+
+    }
+
+}
+
+@media(max-width:500px) {
+
+    .activity-dropdown {
+
+        position: fixed;
+
+        top: 85px;
+
+        right: 15px;
+
+        left: 15px;
+
+        width: auto;
+
+    }
+
+}
+/* =========================
+   SECURITY MENU
+========================= */
+
+.security-menu {
+    position: relative;
+}
+
+
+/* =========================
+   SECURITY NAV BUTTON
+========================= */
+
+.security-nav-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 18px;
+
+    color: #CBD5E1;
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+    position: relative;
+
+}
+
+.security-nav-btn:hover {
+
+    background: #1E293B;
+
+    color: white;
+
+}
+
+.security-nav-btn.active {
+
+    background: #2563EB;
+
+    color: white;
+
+}
+
+
+/* =========================
+   ALERT BADGE
+========================= */
+
+.alert-badge {
+
+    min-width: 20px;
+
+    height: 20px;
+
+    padding: 0 6px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #EF4444;
+
+    color: white;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================
+   SECURITY DROPDOWN
+========================= */
+
+.security-dropdown {
+
+    position: absolute;
+
+    top: calc(100% + 14px);
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 360px;
+
+    background: #FFFFFF;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, .30);
+
+    overflow: hidden;
+
+    z-index: 2000;
+
+    animation: securityDropdown .2s ease;
+
+}
+
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes securityDropdown {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateX(-50%)
+            translateY(-8px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            translateY(0);
+
+    }
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.security-dropdown-header {
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0F172A,
+            #1E293B
+        );
+
+    color: white;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+.security-dropdown-header h3 {
+
+    margin: 0;
+
+    font-size: 18px;
+
+}
+
+.security-dropdown-header p {
+
+    margin: 5px 0 0;
+
+    color: #CBD5E1;
+
+    font-size: 12px;
+
+}
+
+.dropdown-count {
+
+    background: #EF4444;
+
+    color: white;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================
+   SECURITY OPTIONS
+========================= */
+
+.security-option {
+
+    width: 100%;
+
+    border: none;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 16px 20px;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition: .2s;
+
+}
+
+.security-option:hover {
+
+    background: #F8FAFC;
+
+}
+
+
+/* =========================
+   OPTION ICON
+========================= */
+
+.security-option-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 17px;
+
+    flex-shrink: 0;
+
+}
+
+.alert-icon {
+
+    background: #FEF2F2;
+
+    color: #DC2626;
+
+}
+
+.suspicious-icon {
+
+    background: #FFF7ED;
+
+    color: #EA580C;
+
+}
+
+.audit-icon {
+
+    background: #EFF6FF;
+
+    color: #2563EB;
+
+}
+
+
+/* =========================
+   OPTION TEXT
+========================= */
+
+.security-option strong {
+
+    display: block;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    margin-bottom: 4px;
+
+}
+
+.security-option span {
+
+    display: block;
+
+    color: #64748B;
+
+    font-size: 12px;
+
+}
