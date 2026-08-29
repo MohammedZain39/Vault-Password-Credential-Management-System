@@ -1,0 +1,709 @@
+/* =========================================================
+   REPORTS PAGE
+========================================================= */
+
+.reports-page {
+  min-height: calc(100vh - 80px);
+  padding: 40px 48px 60px;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.reports-header {
+  margin-bottom: 38px;
+}
+
+.reports-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reports-title-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+
+  font-size: 22px;
+}
+
+.reports-title h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.reports-title p {
+  margin: 6px 0 0;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.report-section {
+  margin-bottom: 38px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+.section-icon {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 17px;
+}
+
+.section-icon.blue {
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+}
+
+.section-icon.purple {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #f8fafc;
+}
+
+.section-heading p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* =========================================================
+   PASSWORD REPORT
+========================================================= */
+
+.password-report-card,
+.login-report-card {
+  background: #111c31;
+  border: 1px solid #1e293b;
+  border-radius: 18px;
+  padding: 24px;
+}
+
+/* =========================================================
+   PASSWORD STATISTICS
+========================================================= */
+
+.password-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 18px;
+
+  background: #162238;
+  border: 1px solid #23324a;
+  border-radius: 14px;
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.stat-icon.total {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.stat-icon.strong {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.stat-icon.medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.stat-icon.weak {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.stat-card span,
+.login-stat span {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+
+.stat-card strong,
+.login-stat strong {
+  display: block;
+  font-size: 25px;
+  color: #f8fafc;
+}
+
+/* =========================================================
+   HEALTH SCORE
+========================================================= */
+
+.health-score {
+  margin-top: 24px;
+  padding: 25px;
+
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  background: #162238;
+  border: 1px solid #23324a;
+  border-radius: 15px;
+}
+
+.health-score-left {
+  flex-shrink: 0;
+}
+
+.score-circle {
+  width: 125px;
+  height: 125px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle,
+      #162238 58%,
+      transparent 59%
+    ),
+    conic-gradient(
+      #22c55e 0deg,
+      #22c55e 360deg
+    );
+
+  text-align: center;
+}
+
+.score-circle strong {
+  display: block;
+  font-size: 25px;
+  color: #f8fafc;
+}
+
+.score-circle span {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.health-score-content {
+  flex: 1;
+}
+
+.health-score-content h3,
+.login-summary h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
+  color: #f8fafc;
+}
+
+.health-score-content p,
+.login-summary p {
+  margin: 0 0 17px;
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.health-progress,
+.login-progress {
+  width: 100%;
+  height: 8px;
+
+  background: #0f172a;
+  border-radius: 20px;
+
+  overflow: hidden;
+}
+
+.health-progress-fill,
+.login-progress-fill {
+  height: 100%;
+  border-radius: 20px;
+
+  background: #22c55e;
+
+  transition: width 0.5s ease;
+}
+
+.health-score-value {
+  display: block;
+  margin-top: 8px;
+
+  font-size: 12px;
+  color: #4ade80;
+}
+
+/* =========================================================
+   LOGIN STATISTICS
+========================================================= */
+
+.login-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.login-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 19px;
+
+  background: #162238;
+  border: 1px solid #23324a;
+  border-radius: 14px;
+}
+
+.login-stat-icon {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.login-stat-icon.attempts {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.login-stat-icon.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.login-stat-icon.failed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+/* =========================================================
+   LOGIN SUMMARY
+========================================================= */
+
+.login-summary {
+  margin-top: 24px;
+
+  padding: 25px;
+
+  background: #162238;
+  border: 1px solid #23324a;
+  border-radius: 15px;
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.summary-header strong {
+  font-size: 28px;
+  color: #60a5fa;
+}
+
+.login-progress-fill {
+  background: #3b82f6;
+}
+
+.login-progress-labels {
+  display: flex;
+  justify-content: space-between;
+
+  margin-top: 9px;
+
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* =========================================================
+   SECURITY SUMMARY
+========================================================= */
+
+.report-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  padding: 22px 24px;
+
+  background: rgba(37, 99, 235, 0.07);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  border-radius: 15px;
+}
+
+.summary-icon {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+
+  flex-shrink: 0;
+}
+
+.report-summary h3 {
+  margin: 0 0 6px;
+  color: #e2e8f0;
+  font-size: 16px;
+}
+
+.report-summary p {
+  margin: 0;
+
+  max-width: 900px;
+
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.reports-loading {
+  min-height: 500px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #94a3b8;
+}
+
+.loading-spinner {
+  width: 38px;
+  height: 38px;
+
+  border: 3px solid #23324a;
+  border-top-color: #3b82f6;
+
+  border-radius: 50%;
+
+  animation: reportSpin 0.8s linear infinite;
+
+  margin-bottom: 14px;
+}
+
+@keyframes reportSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.reports-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 18px 20px;
+
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+
+  border-radius: 12px;
+
+  color: #f87171;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .reports-page {
+    padding: 30px;
+  }
+
+  .password-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .login-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .reports-page {
+    padding: 22px 16px 40px;
+  }
+
+  .reports-title h1 {
+    font-size: 24px;
+  }
+
+  .password-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .health-score {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .score-circle {
+    width: 105px;
+    height: 105px;
+  }
+
+  .summary-header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
+/* =========================================================
+   FINAL LOGIN ACTIVITY OVERRIDE
+   ========================================================= */
+
+.login-report-card {
+  background: #121e34 !important;
+}
+
+.login-summary {
+  background: #17243b !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 24px !important;
+  margin-top: 20px !important;
+  border: 1px solid #2a3a57 !important;
+  border-radius: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.login-progress {
+  display: block !important;
+  width: 100% !important;
+  height: 10px !important;
+  margin-top: 20px !important;
+  padding: 0 !important;
+
+  background: #263653 !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+.login-progress-fill {
+  display: block !important;
+  height: 100% !important;
+  min-height: 10px !important;
+  padding: 0 !important;
+
+  background: #3b82f6 !important;
+  border-radius: 999px !important;
+}
+
+.summary-header {
+  background: transparent !important;
+}
+
+.login-progress-labels {
+  background: transparent !important;
+}
+/* =========================================================
+   CLEAN LOGIN SUCCESS RATE
+   ========================================================= */
+
+.login-rate-card {
+  width: 100% !important;
+  margin-top: 20px !important;
+  padding: 24px !important;
+
+  background: #17243b !important;
+  border: 1px solid #2a3a57 !important;
+  border-radius: 16px !important;
+
+  box-sizing: border-box !important;
+}
+
+/* Header */
+
+.login-rate-info {
+  width: 100% !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+
+  background: transparent !important;
+}
+
+.login-rate-info > div {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.login-rate-info h3 {
+  margin: 0 0 6px !important;
+
+  color: #f8fafc !important;
+  font-size: 17px !important;
+  font-weight: 650 !important;
+}
+
+.login-rate-info p {
+  margin: 0 !important;
+
+  color: #94a3b8 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.login-rate-info > strong {
+  color: #60a5fa !important;
+
+  font-size: 30px !important;
+  font-weight: 700 !important;
+
+  background: transparent !important;
+}
+
+
+/* Progress bar */
+
+.login-rate-bar {
+  width: 100% !important;
+  height: 10px !important;
+
+  margin-top: 20px !important;
+
+  background: #263653 !important;
+  border-radius: 999px !important;
+
+  overflow: hidden !important;
+}
+
+.login-rate-fill {
+  height: 10px !important;
+  min-height: 10px !important;
+
+  background: #3b82f6 !important;
+  border-radius: 999px !important;
+
+  transition: width 0.4s ease !important;
+}
+
+
+/* Labels */
+
+.login-rate-labels {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  margin-top: 10px !important;
+
+  background: transparent !important;
+}
+
+.login-rate-labels span {
+  background: transparent !important;
+
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.successful-label {
+  color: #4ade80 !important;
+}
+
+.failed-label {
+  color: #f87171 !important;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .login-rate-card {
+    padding: 18px !important;
+  }
+
+  .login-rate-info {
+    align-items: flex-start !important;
+  }
+
+  .login-rate-info > strong {
+    font-size: 24px !important;
+  }
+}

@@ -10,6 +10,7 @@ import {
   FaExclamationTriangle,
   FaClipboardList
 } from "react-icons/fa";
+import { FaChartBar } from "react-icons/fa";
 
 import API from "../services/api";
 import "./Navbar.css";
@@ -156,6 +157,11 @@ function Navbar() {
           Vault
 
         </NavLink>
+
+        <NavLink to="/reports">
+  <FaChartBar />
+  Reports
+</NavLink>
 
 
         {/* =========================
