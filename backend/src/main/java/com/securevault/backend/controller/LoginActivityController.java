@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/login-activity")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class LoginActivityController {
 
     private final LoginActivityService loginActivityService;

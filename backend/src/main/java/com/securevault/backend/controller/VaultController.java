@@ -13,7 +13,6 @@ import com.securevault.backend.dto.VaultStatusResponse;
 @RestController
 @RequestMapping("/api/vault")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
 public class VaultController {
 
     private final VaultService vaultService;
