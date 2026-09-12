@@ -4,6 +4,8 @@
 .idea/
 **/.idea/
 .vscode/
+.DS_Store
+*.iml
 
 # ==========================
 # Spring Boot
@@ -26,3 +28,9 @@ reactapp/securevault-frontend/dist/
 # Environment
 # ==========================
 .env
+.env.*
+!.env.example
+
+node_modules/
+target/
+dist/

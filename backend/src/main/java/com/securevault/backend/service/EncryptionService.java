@@ -1,27 +1,42 @@
 package com.securevault.backend.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Service
 public class EncryptionService {
 
-    // 16 characters = 128-bit AES key
-    private static final String SECRET_KEY = "SecureVault12345";
+    private final String secretKey;
+
+    public EncryptionService(
+            @Value("${app.encryption.secret}") String secretKey
+    ) {
+        this.secretKey = secretKey;
+
+        if (secretKey == null || secretKey.length() != 16) {
+            throw new IllegalArgumentException(
+                    "ENCRYPTION_KEY must be exactly 16 characters for the current AES implementation."
+            );
+        }
+    }
 
     private SecretKeySpec getKey() {
 
         return new SecretKeySpec(
-                SECRET_KEY.getBytes(),
+                secretKey.getBytes(StandardCharsets.UTF_8),
                 "AES"
         );
-
     }
 
-    // Encrypt
+    // ==========================================
+    // ENCRYPT
+    // ==========================================
+
     public String encrypt(String data) {
 
         try {
@@ -34,20 +49,26 @@ public class EncryptionService {
             );
 
             byte[] encrypted =
-                    cipher.doFinal(data.getBytes());
+                    cipher.doFinal(
+                            data.getBytes(StandardCharsets.UTF_8)
+                    );
 
             return Base64.getEncoder()
                     .encodeToString(encrypted);
 
         } catch (Exception e) {
 
-            throw new RuntimeException(e);
-
+            throw new RuntimeException(
+                    "Encryption failed.",
+                    e
+            );
         }
-
     }
 
-    // Decrypt
+    // ==========================================
+    // DECRYPT
+    // ==========================================
+
     public String decrypt(String encryptedData) {
 
         try {
@@ -64,15 +85,16 @@ public class EncryptionService {
                             .decode(encryptedData);
 
             return new String(
-                    cipher.doFinal(decoded)
+                    cipher.doFinal(decoded),
+                    StandardCharsets.UTF_8
             );
 
         } catch (Exception e) {
 
-            throw new RuntimeException(e);
-
+            throw new RuntimeException(
+                    "Decryption failed.",
+                    e
+            );
         }
-
     }
-
 }
